@@ -218,9 +218,9 @@ while True:
                 if type(chosen) == int:
                     if chosen == 1:
                         print("Największa wartość : ")
-                        tree.find_max(tree)
+                        tree.find_max(root)
                         print("Najmniejsza wartość : ")
-                        tree.find_min(tree)
+                        tree.find_min(root)
                         print("\n")
                     if chosen == 2:
                         print("Podaj ile wartości chcesz usunąć: ")
@@ -241,7 +241,7 @@ while True:
                         print("\n")
                     if chosen == 5:
                         print("Delete post-order")
-                        tree.post_order_delete(tree)
+                        tree.post_order_delete(root)
                         print("\n")
                     if chosen == 6:
                         print("Podaj klucz do podrzewa: ")
