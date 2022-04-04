@@ -94,13 +94,12 @@ def delete(root, value):
 
 
 def post_order_delete(root):
-    print("\nDelete post-order")
     post_order(root, post_order_tab)
     print("Deleted values")
     for x in range(len(post_order_tab)):
         val = post_order_tab[x]
         print(val, end="->")
-        delete(root, val)
+        root = delete(root, val)
 
 
 def random_number_generator(n):
@@ -128,14 +127,6 @@ def shell_sort(t, n):
         interval = (interval - 1)//3
 
 
-def mid(t, l, p):
-    if l < p:
-        median = (l + p)//2
-        print(median)
-        mid(t, l, median)
-        mid(t, median + 1, p)
-
-
 post_order_tab = []
 while True:
     root = None
@@ -159,50 +150,48 @@ while True:
                 print("Menu procedur:\n1 - Wyszukiwanie min i max\n2 - Usunięcie elementu\n3 - Wypisanie in-order"
                       "\n4 - Wypisanie pre-order\n5 - Usunięcie całego drzewa(post-order)\n6 - Wypisanie pre-order podrzewa"
                       "\n7 - Równoważenie drzewa\n8 - Powrót do menu głównego")
-                try:
-                    chosen = int(input())
-                    if type(chosen) == int:
-                        if chosen == 1:
-                            print("Największa wartość : ")
-                            find_max(root)
-                            print("Najmniejsza wartość : ")
-                            find_min(root)
+             #   try:
+                chosen = int(input())
+                if type(chosen) == int:
+                    if chosen == 1:
+                        print("Największa wartość : ")
+                        find_max(root)
+                        print("Najmniejsza wartość : ")
+                        find_min(root)
+                        print("\n")
+                    if chosen == 2:
+                        print("Podaj ile wartości chcesz usunąć: ")
+                        value = int(input())
+                        if type(value) == int:
+                            for v in range(value):
+                                value_td = int(input())
+                                root = delete(root, value_td)
+                        print("\n")
+                    if chosen == 3:
+                        print("In-order")
+                        in_order(root)
+                        print("\n")
+                    if chosen == 4:
+                        print("Pre-order")
+                        pre_order(root)
+                        print("\n")
+                    if chosen == 5:
+                        print("Delete post-order")
+                        post_order_delete(root)
+                        print("\n")
+                    if chosen == 6:
+                        print("Podaj klucz do podrzewa: ")
+                        key = int(input())
+                        if type(key) == int:
+                            print("Find a key")
+                            find_and_print(root, key)
                             print("\n")
-                        if chosen == 2:
-                            print("Podaj ile wartości chcesz usunąć: ")
-                            value = int(input())
-                            if type(value) == int:
-                                for v in range(value):
-                                    value_td = int(input())
-                                    if type(value_td) == int:
-                                        delete(root, value_td)
-                            print("\n")
-                        if chosen == 3:
-                            print("In-order")
-                            in_order(root)
-                            print("\n")
-                        if chosen == 4:
-                            print("Pre-order")
-                            pre_order(root)
-                            print("\n")
-                        if chosen == 5:
-                            print("Delete post-order")
-                            post_order_delete(root)
-                            print("\n")
-                        if chosen == 6:
-                            print("Podaj klucz do podrzewa: ")
-                            key = int(input())
-                            if type(key) == int:
-                                print("Find a key")
-                                find_and_print(root, key)
-                                print(find_and_print(root, key))
-                                print("\n")
-                        if chosen == 7:
-                            print("Nie wiem o co cmon") #
-                        if chosen == 8:
-                            break
-                except:
-                    print("To chyba nie jest poprawna wartość! Spróbuj ponownie.")
+                    if chosen == 7:
+                        print("Nie wiem o co cmon") #
+                    if chosen == 8:
+                        break
+              #  except:
+                #    print("To chyba nie jest poprawna wartość! Spróbuj ponownie.")
         else:
             print("To nie jest liczba podaj poprawną wartość!")
 
