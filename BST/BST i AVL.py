@@ -1,6 +1,6 @@
 import sys
 from random import randint
-
+import time
 
 class BST:
     def __init__(self, key):
@@ -318,7 +318,9 @@ while True:
                 if type(number) == int:
                     data.append(number)
                     ile += 1
+            start = time.time()
             heapsort(data,len(data))
+            print("Czas sortowania ---- {} ----".format(time.time() - start))
             root = tree.insertion_binary(data)
             while True:
                 print(
