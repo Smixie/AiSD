@@ -260,7 +260,6 @@ while True:
                     "Menu procedur:\n1 - Wyszukiwanie min i max\n2 - Usunięcie elementu\n3 - Wypisanie in-order"
                     "\n4 - Wypisanie pre-order\n5 - Usunięcie całego drzewa(post-order)\n6 - Wypisanie pre-order podrzewa"
                     "\n7 - Równoważenie drzewa\n8 - Powrót do menu głównego")
-                #   try:
                 chosen = int(input())
                 if type(chosen) == int:
                     if chosen == 1:
@@ -302,8 +301,6 @@ while True:
                         print("Maintenance in progress")  #
                     if chosen == 8:
                         break
-            #  except:
-            #    print("To chyba nie jest poprawna wartość! Spróbuj ponownie.")
         else:
             print("To nie jest liczba podaj poprawną wartość!")
     if x == "2":
@@ -314,20 +311,16 @@ while True:
             ile = 0
             data = []
             while ile < ile_liczb:
-                # try:
                 number = int(input())
                 if type(number) == int:
                     data.append(number)
                     ile += 1
             root = tree.insertion_binary(data)
-            # except:
-            #   print("To nie jest liczba spróbuj jeszcze raz!")
             while True:
                 print(
                     "Menu procedur:\n1 - Wyszukiwanie min i max\n2 - Usunięcie elementu\n3 - Wypisanie in-order"
                     "\n4 - Wypisanie pre-order\n5 - Usunięcie całego drzewa(post-order)\n6 - Wypisanie pre-order podrzewa"
                     "\n7 - Powrót do menu głównego")
-                # try:
                 chosen = int(input())
                 if type(chosen) == int:
                     if chosen == 1:
@@ -368,12 +361,10 @@ while True:
                             print("\n")
                     if chosen == 7:
                         break
-                # except:
-                #  print("To chyba nie jest poprawna wartość! Spróbuj ponownie.")
         else:
             print("To nie jest liczba podaj poprawną wartość!")
     if x == "3":
-        print("Maintenance in progress")
+        print("Test")
     if x == "4":
         sys.exit()
     else:
