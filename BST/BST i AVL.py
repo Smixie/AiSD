@@ -217,22 +217,25 @@ def random_number_generator(n):
     return tab
 
 
-def shell_sort(t, n):
-    interval = 1
-    j = 1
-    while (pow(3, j) - 1) / 2 < n:
-        interval = (pow(3, j) - 1) // 2
-        j += 1
+def heap(t, n, i):
+    maxi = i
+    childleft = 2 * i + 1
+    childright = 2 * i + 2
+    if childleft < n and t[childleft] < t[i]:
+        maxi = childleft
+    if childright < n and t[childright] < t[maxi]:
+        maxi = childright
+    if maxi != i:
+        t[i], t[maxi] = t[maxi], t[i]
+        heap(t, n, maxi)
 
-    while interval > 0:
-        for y in range(interval, n):
-            temp = t[y]
-            j = y
-            while j >= interval and t[j - interval] < temp:
-                t[j] = t[j - interval]
-                j -= interval
-            t[j] = temp
-        interval = (interval - 1)//3
+
+def heapsort(t, n):
+    for x in range(n//2, -1, -1):
+        heap(t, n, x)
+    for y in range(n-1, 0, -1):
+        t[y], t[0] = t[0], t[y]
+        heap(t, y, 0)
 
 
 post_order_tab = []
@@ -315,6 +318,7 @@ while True:
                 if type(number) == int:
                     data.append(number)
                     ile += 1
+            heapsort(data,len(data))
             root = tree.insertion_binary(data)
             while True:
                 print(
