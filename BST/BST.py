@@ -1,6 +1,5 @@
 import sys
 from random import randint
-print("Dobra")
 
 class BST:
     def __init__(self, key):
