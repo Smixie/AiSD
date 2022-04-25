@@ -1,4 +1,5 @@
 import sys
+
 import numpy as np
 from collections import deque
 
@@ -155,7 +156,7 @@ def dfs_visited(vert, u, color, L, cykl):
     idx = numbers.index(u)
     color[idx] = "grey"
     for v in range(len(end_matrix[idx])-4):
-        if min(numbers) <= end_matrix[idx][v] <= vert:
+        if min(numbers) <= end_matrix[idx][v] <= max(numbers):
             if color[numbers.index(numbers[v])] == "grey":
                 cykl[0] = True
                 return
@@ -170,7 +171,7 @@ def DEL_mgrafu(vrt):
     in_degree = [0] * vrt
     for u in range(vrt):
         for v in range(vrt):
-            if min(numbers) <= end_matrix[u][v] - vrt <= vrt:
+            if min(numbers) + vrt <= end_matrix[u][v]:
                 in_degree[u] += 1
 
     Q = deque()
