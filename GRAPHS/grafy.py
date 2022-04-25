@@ -2,6 +2,7 @@ import sys
 
 import numpy as np
 from collections import deque
+from collections import defaultdict
 
 successors = {}
 predecessors = {}
@@ -20,6 +21,68 @@ class BadValue(Error):
     """Bad input value"""
     pass
 
+class Graph():
+	def __init__(self,vertices):
+		self.graph = defaultdict(list)
+		self.V = vertices
+
+def edgeAdder(graph,u,v):
+	graph.graph[u].append(v)
+
+def cycle(graph, v, visited, recStack):
+	visited[v] = True
+	recStack[v] = True
+	for neighbour in graph.graph[v]:
+		if visited[neighbour] == False:
+			if cycle(graph,neighbour, visited, recStack) == True:
+				return True
+		elif recStack[neighbour] == True:
+			return True
+	recStack[v] = False
+	return False
+
+def isCyclic(graph):
+	visited = [False] * (graph.V + 1)
+	recStack = [False] * (graph.V + 1)
+	for node in range(graph.V):
+		if visited[node] == False:
+			if cycle(graph,node,visited,recStack) == True:
+				return True
+	return False
+
+tab_DFS = []
+def DFSms(graph,v,visited):
+	visited.add(v)
+	tab_DFS.append(v)
+	#print(v, end=' ')
+	for i in graph.graph[v]:
+		if i not in visited:
+			DFSms(graph,i,visited)
+
+def DFS_msasiedztwa(graph,v):
+	visited = set()
+	DFSms(graph,v,visited)
+
+
+def DEL_msasiedztwa(graph):
+	in_d = [0] * (graph.V)
+	for i in graph.graph:
+		for j in graph.graph[i]:
+			in_d[j] += 1
+	q = []
+	for i in range(graph.V):
+		if in_d[i] == 0:
+			q.append(i)
+	cnt = 0
+	top = []
+	while q:
+		u = q.pop(0)
+		top.append(u)
+		for i in graph.graph[u]:
+			in_d[i] -= 1
+			if in_d[i] == 0:
+				q.append(i)
+	print(top)
 
 def create_tabs():
     successor = []
@@ -245,39 +308,69 @@ while True:
                             x = list(map(int, line.split()))
                             vertexes.append(x)
                         nol += 1
-            # Tworznie macierzy grafu / wyświetlenie
-            create_tabs()
-            create_endpoint(v)
-            print("Matrix")
-            print(np.matrix(end_matrix))
-            print("Wierzchołki")
-            for x in numbers:
-                print(x, end=" ")
-
-            while True:
-                print("\nWybierz : DFS_mgraf(1) / Algorytm Kahna(2) / Zakończ(3)")
+            print("Wybierz na jakiej macierzy chcesz operowac: Macierz sasiedztwa(1) / Macierz grafu(2)")
+            odp = input()
+            if odp == "1":
+                g=Graph(v)
+                for i in range(e):
+                    edgeAdder(g,vertexes[i][0],vertexes[i][1])
                 while True:
-                    try:
-                        dfs = int(input())
-                        break
-                    except ValueError:
-                        print("Podaj poprawne dane!")
-                if dfs == 1:
-                    out = DFS_mgrafu(v)
-                    if not out:
-                        print("Graf zawiera cykl.Sortowanie niemożliwe.")
-                    else:
-                        print(out)
-                if dfs == 2:
-                    order = DEL_mgrafu(v)
-                    if not order:
-                        print("Graf zawiera cykl.Sortowanie niemożliwe.")
-                    else:
-                        print(order)
-                if dfs == 3:
-                    sys.exit()
+                    print("\nWybierz : DFS_msasiedztwa(1) / Algorytm Kahna(2) / Zakończ(3)")
+                    while True:
+                        try:
+                            dfs = int(input())
+                            break
+                        except ValueError:
+                            print("Podaj poprawne dane!")
+                    if dfs == 1:
+                        if isCyclic(g)==1:
+                            print("Graf zawiera cykl.Sortowanie niemożliwe.")
+                        else:
+                            DFS_msasiedztwa(g,vertexes[0][0])
+                            print(tab_DFS)
+                    if dfs == 2:
+                        if isCyclic(g):
+                            print("Graf zawiera cykl.Sortowanie niemożliwe.")
+                        else:
+                            DEL_msasiedztwa(g)
+                    if dfs == 3:
+                        sys.exit()
+            elif odp == "2":
+                # Tworznie macierzy grafu / wyświetlenie
+                create_tabs()
+                create_endpoint(v)
+                print("Matrix")
+                print(np.matrix(end_matrix))
+                print("Wierzchołki")
+                for x in numbers:
+                    print(x, end=" ")
+
+                while True:
+                    print("\nWybierz : DFS_mgraf(1) / Algorytm Kahna(2) / Zakończ(3)")
+                    while True:
+                        try:
+                            dfs = int(input())
+                            break
+                        except ValueError:
+                            print("Podaj poprawne dane!")
+                    if dfs == 1:
+                        out = DFS_mgrafu(v)
+                        if not out:
+                            print("Graf zawiera cykl.Sortowanie niemożliwe.")
+                        else:
+                            print(out)
+                    if dfs == 2:
+                        order = DEL_mgrafu(v)
+                        if not order:
+                            print("Graf zawiera cykl.Sortowanie niemożliwe.")
+                        else:
+                            print(order)
+                    if dfs == 3:
+                        sys.exit()
         if chosen == 3:
             break
+    if chosen == 2:
+        break
 
 # for i in sorted(output):
 #     print(i, output[i], end="\n")
