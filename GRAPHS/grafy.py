@@ -50,6 +50,13 @@ def isCyclic(graph):
 				return True
 	return False
 
+def find_min(tab,e):
+    mini=99999999
+    for i in range(e):
+        if tab[i][0]<mini: mini=tab[i][0]
+        if tab[i][1]<mini: mini=tab[i][1]
+    return mini
+
 tab_DFS = []
 def DFSms(graph,v,visited):
 	visited.add(v)
@@ -63,7 +70,7 @@ def DFS_msasiedztwa(graph,v):
 	visited = set()
 	DFSms(graph,v,visited)
 
-
+tab_DEL=[]
 def DEL_msasiedztwa(graph):
 	in_d = [0] * (graph.V)
 	for i in graph.graph:
@@ -82,7 +89,7 @@ def DEL_msasiedztwa(graph):
 			in_d[i] -= 1
 			if in_d[i] == 0:
 				q.append(i)
-	print(top)
+	tab_DEL.append(top)
 
 def create_tabs():
     successor = []
@@ -299,19 +306,33 @@ while True:
                     except BadValue:
                         print("Podano złe wartości krawędzi")
             if read == 2:
-                with open("cases.txt", 'r') as f:
-                    nol = 1
-                    for line in f:
-                        if nol == 1:
-                            v, e = map(int, line.split(" "))
-                        else:
-                            x = list(map(int, line.split()))
-                            vertexes.append(x)
-                        nol += 1
+		try:
+                    with open("cases.txt", 'r') as f:
+                        nol = 1
+                        for line in f:
+                            if nol == 1:
+                                v, e = map(int, line.split(" "))
+                            else:
+                                x = list(map(int, line.split()))
+                                vertexes.append(x)
+                            nol += 1
+		except:
+                    print("Błędne dane lub taki plik nie istnieje!")
+                    continue
+	    if len(vertexes)==0:
+                print("Graf nie istnieje!")
+                continue
             print("Wybierz na jakiej macierzy chcesz operowac: Macierz sasiedztwa(1) / Macierz grafu(2)")
             odp = input()
             if odp == "1":
                 g=Graph(v)
+		q = find_min(vertexes, e)
+                #print(vertexes)
+                if q!=0:
+                    for i in range(e):
+                        vertexes[i][0]=vertexes[i][0]-q
+                        vertexes[i][1]=vertexes[i][1]-q
+                #print(vertexes)
                 for i in range(e):
                     edgeAdder(g,vertexes[i][0],vertexes[i][1])
                 while True:
@@ -327,12 +348,21 @@ while True:
                             print("Graf zawiera cykl.Sortowanie niemożliwe.")
                         else:
                             DFS_msasiedztwa(g,vertexes[0][0])
+                            for i in range(len(tab_DFS)):
+                                tab_DFS[i] += q
                             print(tab_DFS)
+                            tab_DFS=[]
                     if dfs == 2:
                         if isCyclic(g):
                             print("Graf zawiera cykl.Sortowanie niemożliwe.")
                         else:
                             DEL_msasiedztwa(g)
+                            #print(tab_DEL)
+                            for i in range(len(tab_DEL[0])):
+                                #print(tab_DEL[i])
+                                tab_DEL[0][i] += q
+                            print(tab_DEL[0])
+                            tab_DEL=[]
                     if dfs == 3:
                         sys.exit()
             elif odp == "2":
@@ -367,10 +397,8 @@ while True:
                             print(order)
                     if dfs == 3:
                         sys.exit()
-        if chosen == 3:
+        if chosen == 2:
             break
-    if chosen == 2:
-        break
 
 # for i in sorted(output):
 #     print(i, output[i], end="\n")
