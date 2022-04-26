@@ -1,5 +1,4 @@
 import sys
-
 import numpy as np
 from collections import deque
 from collections import defaultdict
@@ -16,9 +15,12 @@ class Error(Exception):
     """Base class for other exceptions"""
     pass
 
-
 class BadValue(Error):
     """Bad input value"""
+    pass
+
+class DoubledValue(Error):
+    """Doubled value"""
     pass
 
 class Graph():
@@ -209,6 +211,8 @@ def DFS_mgrafu(vrt):
     cykl = [False]
     for u in numbers:
         idx = numbers.index(u)
+        if end_matrix[idx][idx] > 0:
+            break
         if color[idx] == "white":
             dfs_visited(vrt, u, color, L, cykl)
         if cykl[0]:
@@ -267,7 +271,7 @@ def DEL_mgrafu(vrt):
 
 
 while True:
-    print("1. Macierz grafu\n2. Zakończ działanie")
+    print("1. Grafy\n2. Zakończ działanie") # zmiana
     try:
         chosen = int(input())
     except ValueError:
@@ -299,14 +303,20 @@ while True:
                         x = list(map(int, input().split()))
                         if len(x) != 2:
                             raise BadValue
-                        vertexes.append(x)
-                        y += 1
+                        else:
+                            if x not in vertexes:
+                                vertexes.append(x)
+                                y += 1
+                            else:
+                                raise DoubledValue
                     except ValueError:
                         print("To nie jest poprawna wartość!")
                     except BadValue:
                         print("Podano złe wartości krawędzi")
+                    except DoubledValue:
+                        print("Taka wartość już istnieje nie można jej dodać ponownie!")
             if read == 2:
-		try:
+                try:
                     with open("cases.txt", 'r') as f:
                         nol = 1
                         for line in f:
@@ -314,19 +324,28 @@ while True:
                                 v, e = map(int, line.split(" "))
                             else:
                                 x = list(map(int, line.split()))
-                                vertexes.append(x)
+                                if x not in vertexes:
+                                    vertexes.append(x)
+                                else:
+                                    raise DoubledValue
                             nol += 1
-		except:
+                except FileNotFoundError:
                     print("Błędne dane lub taki plik nie istnieje!")
                     continue
-	    if len(vertexes)==0:
+                except ValueError:
+                    print("Plik zawiera niepoprawne dane! Należy go sprawdzić!")
+                    continue
+                except DoubledValue:
+                    print("Jedna z wartości wystepuje wielokrotnie i nie zostanie dodana! Sprawdź plik.")
+                    continue
+            if len(vertexes)==0:
                 print("Graf nie istnieje!")
                 continue
             print("Wybierz na jakiej macierzy chcesz operowac: Macierz sasiedztwa(1) / Macierz grafu(2)")
             odp = input()
             if odp == "1":
                 g=Graph(v)
-		q = find_min(vertexes, e)
+                q = find_min(vertexes, e)
                 #print(vertexes)
                 if q!=0:
                     for i in range(e):
@@ -340,6 +359,8 @@ while True:
                     while True:
                         try:
                             dfs = int(input())
+                            if dfs not in [1,2,3]:
+                                raise ValueError
                             break
                         except ValueError:
                             print("Podaj poprawne dane!")
@@ -375,14 +396,29 @@ while True:
                 for x in numbers:
                     print(x, end=" ")
 
+                # print("Następnicy")
+                # for i in sorted(successors):
+                #     print(i, successors[i], end="\n")
+                #
+                # print("Poprzednicy")
+                # for i in sorted(predecessors):
+                #     print(i, predecessors[i], end="\n")
+                #
+                # print("Brak incydencji")
+                # for i in sorted(brak_incydencji):
+                #     print(i, brak_incydencji[i], end="\n")
+
                 while True:
                     print("\nWybierz : DFS_mgraf(1) / Algorytm Kahna(2) / Zakończ(3)")
                     while True:
                         try:
                             dfs = int(input())
+                            if dfs not in [1,2,3]:
+                                raise ValueError
                             break
                         except ValueError:
                             print("Podaj poprawne dane!")
+                            continue
                     if dfs == 1:
                         out = DFS_mgrafu(v)
                         if not out:
@@ -399,17 +435,3 @@ while True:
                         sys.exit()
         if chosen == 2:
             break
-
-# for i in sorted(output):
-#     print(i, output[i], end="\n")
-# print("Następnicy")
-# for i in sorted(successors):
-#     print(i, successors[i], end="\n")
-#
-# print("Poprzednicy")
-# for i in sorted(predecessors):
-#     print(i, predecessors[i], end="\n")
-#
-# print("Brak incydencji")
-# for i in sorted(brak_incydencji):
-#     print(i, brak_incydencji[i], end="\n")
