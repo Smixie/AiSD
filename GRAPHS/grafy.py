@@ -492,7 +492,7 @@ while True:
                     f.write(form)
 
                 czesc += 1
-                print("{} z 10 / {} z 3".format(etap,czesc))
+                print("{} z 10 / {} z 4".format(etap,czesc))
                 avg_DELs = 0
                 for x in range(1,11):
                     print(x,end=" ")
@@ -521,7 +521,7 @@ while True:
                 create_endpoint(v)
 
                 czesc += 1
-                print("{} z 10 / {} z 3".format(etap, czesc))
+                print("{} z 10 / {} z 4".format(etap, czesc))
                 avg_DELg = 0
                 for x in range(1, 11):
                     print(x, end=" ")
@@ -536,7 +536,7 @@ while True:
                 print("\n")
 
                 czesc += 1
-                print("{} z 10 / {} z 3".format(etap, czesc))
+                print("{} z 10 / {} z 4".format(etap, czesc))
                 avg_DFSg = 0
                 for x in range(1, 11):
                     print(x, end=" ")
