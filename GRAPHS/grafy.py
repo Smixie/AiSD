@@ -488,8 +488,10 @@ while True:
                 for x in range(1,11):
                     print(x,end=" ")
                     time_DFSs = time.time()
-                    DFS_msasiedztwa(g, vertexes[0][0])
+                    w = DFS_msasiedztwa(g)
                     end_DFSs = time.time() - time_DFSs
+		    for i in w:
+			tab_DFS.append(i)
                     for i in range(len(tab_DFS)):
                         tab_DFS[i] += q
                     tab_DFS = []
