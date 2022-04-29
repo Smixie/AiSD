@@ -485,36 +485,48 @@ while True:
 
 		print("{} z 10 / {} z 4".format(etap,czesc))
                 avg_DFSs = 0
-                for x in range(1,11):
-                    print(x,end=" ")
+		t_DFS = []
+                for x in range(1, 11):
+                    print(x, end=" ")
                     time_DFSs = time.time()
-                    w = DFS_msasiedztwa(g)
+                    y = DFS_msasiedztwa(g)
                     end_DFSs = time.time() - time_DFSs
-		    for i in w:
-			tab_DFS.append(i)
+                    end_DFSs.append(t_DFS)
+                    avg_DFSs += end_DFSs
+                    for i in y:
+                        tab_DFS.append(i)
                     for i in range(len(tab_DFS)):
                         tab_DFS[i] += q
                     tab_DFS = []
-
+                avg_DFSs=avg_DFSs/10
+                os_DFS = 0
+                for i in t_DFS:
+                    os_DFS += (i-avg_DFSs)*(i-avg_DFSs)
+                os_DFS = math.sqrt(os_DFS/10)
                 with open('DFSs.txt', 'a') as f:
-                    form = "{}\t{}\n".format(v, avg_DELs/10)
+                    form = "{}\t{}\t{}\n".format(v, avg_DFSs,os_DFS)
                     f.write(form)
-
                 czesc += 1
                 print("{} z 10 / {} z 4".format(etap,czesc))
                 avg_DELs = 0
-                for x in range(1,11):
-                    print(x,end=" ")
+		t_DEL =[]
+                for x in range(1, 11):
+                    print(x, end=" ")
                     time_DELs = time.time()
                     DEL_msasiedztwa(g)
                     end_DELs = time.time() - time_DELs
+                    t_DEL.append(end_DELs)
                     avg_DELs += end_DELs
                     for i in range(len(tab_DEL[0])):
                         tab_DEL[0][i] += q
                     tab_DEL = []
-
+                avg_DELs = avg_DELs / 10
+                os_DEL = 0
+                for i in t_DEL:
+                    os_DEL += (i - avg_DELs) * (i - avg_DELs)
+                os_DEL = math.sqrt(os_DEL/10)
                 with open('DELs.txt', 'a') as f:
-                    form = "{}\t{}\n".format(v, avg_DELs/10)
+                    form = "{}\t{}\t{}\n".format(v, avg_DELs, os_DEL)
                     f.write(form)
                 print("\n")
 
@@ -532,32 +544,43 @@ while True:
                 czesc += 1
                 print("{} z 10 / {} z 4".format(etap, czesc))
                 avg_DELg = 0
+                t_DEL = []
                 for x in range(1, 11):
                     print(x, end=" ")
                     time_DELg = time.time()
                     order = DEL_mgrafu(v)
                     end_DELg = time.time() - time_DELg
+                    t_DEL.append(end_DELg)
                     avg_DELg += end_DELg
-
-                with open('DELg.txt','a') as f:
-                    form = "{}\t{}\n".format(v, avg_DELg/10)
+                avg_DELg = avg_DELg / 10
+                os_DEL = 0
+                for i in t_DEL:
+                    os_DEL += (i - avg_DELg) * (i - avg_DELg)
+                os_DEL = math.sqrt(os_DEL/10)
+                with open('DELg.txt', 'a') as f:
+                    form = "{}\t{}\t{}\n".format(v, avg_DELg, os_DEL)
                     f.write(form)
                 print("\n")
 
                 czesc += 1
                 print("{} z 10 / {} z 4".format(etap, czesc))
                 avg_DFSg = 0
+                t_DFS = []
                 for x in range(1, 11):
                     print(x, end=" ")
                     time_DFSg = time.time()
                     out = DFS_mgrafu(v)
                     end_DFSg = time.time() - time_DFSg
+                    t_DFS.append(end_DFSg)
                     avg_DFSg += end_DFSg
-
-                with open('DFSg.txt','a') as f:
-                    form = "{}\t{}\n".format(v, avg_DFSg/10)
+                avg_DFSg = avg_DFSg / 10
+                os_DFS = 0
+                for i in t_DFS:
+                    os_DFS += (i - avg_DFSg) * (i - avg_DFSg)
+                os_DFS = math.sqrt(os_DFS/10)
+                with open('DFSg.txt', 'a') as f:
+                    form = "{}\t{}\t{}\n".format(v, avg_DFSg, os_DFS)
                     f.write(form)
-
                 print("\n")
                 etap += 1
 	if chosen == 3:
