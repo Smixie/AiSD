@@ -2,6 +2,8 @@ import sys
 import numpy as np
 from collections import deque
 from collections import defaultdict
+from networkx.generators.random_graphs import erdos_renyi_graph
+import time
 
 successors = {}
 predecessors = {}
@@ -217,13 +219,13 @@ def create_endpoint(v):
 
 def DFS_mgrafu(vrt):
     L = []
-    color = ["white"] * vrt
+    color = [0] * vrt # 0 - white 1 - gray 2 - black
     cykl = [False]
     for u in numbers:
-        idx = numbers.index(u)
-        if end_matrix[idx][idx] > 0:
+        # idx = numbers.index(u)
+        if end_matrix[u][u] > 0:
             break
-        if color[idx] == "white":
+        if color[u] == 0:
             dfs_visited(vrt, u, color, L, cykl)
         if cykl[0]:
             break
@@ -231,23 +233,27 @@ def DFS_mgrafu(vrt):
         L = []
 
     L.reverse()
-    return L
+    return 
 
 
 def dfs_visited(vert, u, color, L, cykl):
-    if cykl[0]:
+        if cykl[0]:
         return
-    idx = numbers.index(u)
-    color[idx] = "grey"
-    for v in range(len(end_matrix[idx])-4):
-        if min(numbers) <= end_matrix[idx][v] <= max(numbers):
-            if color[numbers.index(numbers[v])] == "grey":
+    # idx = numbers.index(u)
+    color[u] = 1
+    for v in range(len(end_matrix[u])-4):
+        if min(numbers) <= end_matrix[u][v] <= max(numbers):
+            # if color[numbers.index(numbers[v])] == "grey":
+            #     cykl[0] = True
+            #     return
+            if color[numbers[v]] == 1:
                 cykl[0] = True
                 return
-            if color[numbers.index(numbers[v])] == "white":
+            # if color[numbers.index(numbers[v])] == "white":
+            #     dfs_visited(vert, numbers[v], color, L, cykl)
+            if color[numbers[v]] == 0:
                 dfs_visited(vert, numbers[v], color, L, cykl)
-
-    color[idx] = "black"
+    color[u] = 2
     L.append(u)
 
 
@@ -270,10 +276,10 @@ def DEL_mgrafu(vrt):
         for v in successors[numbers[u]]:
             if v == "a":
                 break
-            ind = numbers.index(v)
-            in_degree[ind] -= 1
-            if in_degree[ind] == 0:
-                Q.appendleft(ind)
+            # ind = numbers.index(v) # działa dla każdej liczy teraz jest od 0
+            in_degree[v] -= 1
+            if in_degree[v] == 0:
+                Q.appendleft(v)
     if len(L) == vrt:
         return L
     else:
@@ -444,4 +450,94 @@ while True:
                     if dfs == 3:
                         sys.exit()
         if chosen == 2:
+            cases = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+            etap  = 1
+            for v in cases:
+                czesc = 1
+                # Tworznenie wierzchołków
+                vertexes = []
+                p = 0.5
+                g = erdos_renyi_graph(v, p)
+                vertexes = []
+                for x in g.edges:
+                    vertexes.append(list(x))
+
+                e = len(vertexes)
+
+                # Macierz sąsiedzwtwa
+                g = Graph(v)
+                q = find_min(vertexes, e)
+
+                if q != 0:
+                    for i in range(e):
+                        vertexes[i][0] = vertexes[i][0] - q
+                        vertexes[i][1] = vertexes[i][1] - q
+
+                for i in range(e):
+                    edgeAdder(g, vertexes[i][0], vertexes[i][1])
+
+                if isCyclic(g):
+                    print("Graf zawiera cykl.Sortowanie niemożliwe.")
+                else:
+                    print("{} z 10 / {} z 3".format(etap,czesc))
+                    avg_DELs = 0
+                    for x in range(1,11):
+                        print(x,end=" ")
+                        time_DELs = time.time()
+                        DEL_msasiedztwa(g)
+                        end_DELs = time.time() - time_DELs
+                        avg_DELs += end_DELs
+                        for i in range(len(tab_DEL[0])):
+                            tab_DEL[0][i] += q
+                        tab_DEL = []
+
+                    with open('DELs.txt', 'a') as f:
+                        form = "{}\t{}\n".format(v, avg_DELs/10)
+                        f.write(form)
+                print("\n")
+
+                # Macierz Grafu
+                successors = {}
+                predecessors = {}
+                incydencji = {}
+                brak_incydencji = {}
+                end_matrix = []
+                numbers = []
+
+                create_tabs()
+                create_endpoint(v)
+
+                czesc += 1
+                print("{} z 10 / {} z 3".format(etap, czesc))
+                avg_DELg = 0
+                for x in range(1, 11):
+                    print(x, end=" ")
+                    time_DELg = time.time()
+                    order = DEL_mgrafu(v)
+                    end_DELg = time.time() - time_DELg
+                    avg_DELg += end_DELg
+
+                with open('DELg.txt','a') as f:
+                    form = "{}\t{}\n".format(v, avg_DELg/10)
+                    f.write(form)
+
+                print("\n")
+
+                czesc += 1
+                print("{} z 10 / {} z 3".format(etap, czesc))
+                avg_DFSg = 0
+                for x in range(1, 11):
+                    print(x, end=" ")
+                    time_DFSg = time.time()
+                    out = DFS_mgrafu(v)
+                    end_DFSg = time.time() - time_DFSg
+                    avg_DFSg += end_DFSg
+
+                with open('DFSg.txt','a') as f:
+                    form = "{}\t{}\n".format(v, avg_DFSg/10)
+                    f.write(form)
+
+                print("\n")
+                etap += 1
+	if chosen == 3:
             break
