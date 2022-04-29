@@ -62,27 +62,32 @@ def find_min(tab,e):
     return mini
 
 tab_DFS = []
-'''def DFSms(graph,v,visited):
-	visited.add(v)
-	tab_DFS.append(v)
-	#print(v, end=' ')
-	for i in graph.graph[v]:
-		if i not in visited:
-			DFSms(graph,i,visited)
+def DFS_msasiedztwa(graph):
+    L=[]
+    color = {u: "white" for u in graph.graph}
+    found_cycle=[False]
+    for u in graph.graph:
+        if color[u] == "white":
+            DFS_visit(graph,u,color,L,found_cycle)
+        if found_cycle[0]:
+            break
+    if found_cycle[0]:
+        L=[]
+    L.reverse()
+    return L
 
-def DFS_msasiedztwa(graph,v):
-	visited = set()
-	DFSms(graph,v,visited)'''
-
-def DFS_msasiedztwa(graph, st, visited=None):
-    if visited is None:
-        visited = set()
-    visited.add(st)
-    tab_DFS.append(st)
-    for i in graph.graph[st]:
-        if i not in visited:
-            DFS_msasiedztwa(graph,i,visited)
-    return visited
+def DFS_visit(graph,u,color,L,found_cycle):
+    if found_cycle[0]:
+        return
+    color[u] = "gray"
+    for v in graph.graph[u]:
+        if color[v] == "gray":
+            found_cycle[0]=True
+            return
+        if color[v] == "white":
+            DFS_visit(graph,v,color,L,found_cycle)
+    color[u] = "black"
+    L.append(u)
 
 tab_DEL=[]
 def DEL_msasiedztwa(graph):
@@ -384,7 +389,9 @@ while True:
                         if isCyclic(g)==1:
                             print("Graf zawiera cykl.Sortowanie niemożliwe.")
                         else:
-                            DFS_msasiedztwa(g,0)
+                            x=DFS_msasiedztwa(g)
+			    for i in x:
+				tab_DFS.append(i)
                             for i in range(len(tab_DFS)):
                                 tab_DFS[i] += q
                             print(tab_DFS)
