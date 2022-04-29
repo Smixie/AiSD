@@ -237,7 +237,7 @@ def DFS_mgrafu(vrt):
 
 
 def dfs_visited(vert, u, color, L, cykl):
-        if cykl[0]:
+    if cykl[0]:
         return
     # idx = numbers.index(u)
     color[u] = 1
