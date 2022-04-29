@@ -476,24 +476,37 @@ while True:
                 for i in range(e):
                     edgeAdder(g, vertexes[i][0], vertexes[i][1])
 
-                if isCyclic(g):
-                    print("Graf zawiera cykl.Sortowanie niemożliwe.")
-                else:
-                    print("{} z 10 / {} z 3".format(etap,czesc))
-                    avg_DELs = 0
-                    for x in range(1,11):
-                        print(x,end=" ")
-                        time_DELs = time.time()
-                        DEL_msasiedztwa(g)
-                        end_DELs = time.time() - time_DELs
-                        avg_DELs += end_DELs
-                        for i in range(len(tab_DEL[0])):
-                            tab_DEL[0][i] += q
-                        tab_DEL = []
+		print("{} z 10 / {} z 4".format(etap,czesc))
+                avg_DFSs = 0
+                for x in range(1,11):
+                    print(x,end=" ")
+                    time_DFSs = time.time()
+                    DFS_msasiedztwa(g, vertexes[0][0])
+                    end_DFSs = time.time() - time_DFSs
+                    for i in range(len(tab_DFS)):
+                        tab_DFS[i] += q
+                    tab_DFS = []
 
-                    with open('DELs.txt', 'a') as f:
-                        form = "{}\t{}\n".format(v, avg_DELs/10)
-                        f.write(form)
+                with open('DFSs.txt', 'a') as f:
+                    form = "{}\t{}\n".format(v, avg_DELs/10)
+                    f.write(form)
+
+                czesc += 1
+                print("{} z 10 / {} z 3".format(etap,czesc))
+                avg_DELs = 0
+                for x in range(1,11):
+                    print(x,end=" ")
+                    time_DELs = time.time()
+                    DEL_msasiedztwa(g)
+                    end_DELs = time.time() - time_DELs
+                    avg_DELs += end_DELs
+                    for i in range(len(tab_DEL[0])):
+                        tab_DEL[0][i] += q
+                    tab_DEL = []
+
+                with open('DELs.txt', 'a') as f:
+                    form = "{}\t{}\n".format(v, avg_DELs/10)
+                    f.write(form)
                 print("\n")
 
                 # Macierz Grafu
@@ -520,7 +533,6 @@ while True:
                 with open('DELg.txt','a') as f:
                     form = "{}\t{}\n".format(v, avg_DELg/10)
                     f.write(form)
-
                 print("\n")
 
                 czesc += 1
