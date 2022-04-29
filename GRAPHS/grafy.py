@@ -60,7 +60,7 @@ def find_min(tab,e):
     return mini
 
 tab_DFS = []
-def DFSms(graph,v,visited):
+'''def DFSms(graph,v,visited):
 	visited.add(v)
 	tab_DFS.append(v)
 	#print(v, end=' ')
@@ -70,7 +70,17 @@ def DFSms(graph,v,visited):
 
 def DFS_msasiedztwa(graph,v):
 	visited = set()
-	DFSms(graph,v,visited)
+	DFSms(graph,v,visited)'''
+
+def DFS_msasiedztwa(graph, st, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(st)
+    tab_DFS.append(st)
+    for i in graph.graph[st]:
+        if i not in visited:
+            DFS_msasiedztwa(graph,i,visited)
+    return visited
 
 tab_DEL=[]
 def DEL_msasiedztwa(graph):
@@ -368,7 +378,7 @@ while True:
                         if isCyclic(g)==1:
                             print("Graf zawiera cykl.Sortowanie niemożliwe.")
                         else:
-                            DFS_msasiedztwa(g,vertexes[0][0])
+                            DFS_msasiedztwa(g,0)
                             for i in range(len(tab_DFS)):
                                 tab_DFS[i] += q
                             print(tab_DFS)
