@@ -29,7 +29,25 @@ class Graph():
 	def __init__(self,vertices):
 		self.graph = defaultdict(list)
 		self.V = vertices
+	
+	def topologicalSortUtil(self, v, visited, stack):
 
+        visited[v] = True
+
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topologicalSortUtil(i, visited, stack)
+
+        stack.append(v)
+
+        def topologicalSort(self):
+	    visited = [False] * self.V
+	    stack = []
+
+	    for i in range(self.V):
+	        if not visited[i]:
+		    self.topologicalSortUtil(i, visited, stack)
+		
 def edgeAdder(graph,u,v):
 	graph.graph[u].append(v)
 
@@ -489,14 +507,15 @@ while True:
                 for x in range(1, 11):
                     print(x, end=" ")
                     time_DFSs = time.time()
-                    y = DFS_msasiedztwa(g)
+                    # y = DFS_msasiedztwa(g)
+	            g.topologicalSort()
                     end_DFSs = time.time() - time_DFSs
                     end_DFSs.append(t_DFS)
                     avg_DFSs += end_DFSs
-                    for i in y:
-                        tab_DFS.append(i)
-                    for i in range(len(tab_DFS)):
-                        tab_DFS[i] += q
+#                     for i in y:
+#                         tab_DFS.append(i)
+#                     for i in range(len(tab_DFS)):
+#                         tab_DFS[i] += q
                     tab_DFS = []
                 avg_DFSs=avg_DFSs/10
                 os_DFS = 0
