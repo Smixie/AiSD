@@ -26,11 +26,11 @@ class DoubledValue(Error):
     pass
 
 class Graph():
-	def __init__(self,vertices):
-		self.graph = defaultdict(list)
-		self.V = vertices
-	
-	def topologicalSortUtil(self, v, visited, stack):
+    def __init__(self,vertices):
+        self.graph = defaultdict(list)
+        self.V = vertices
+
+    def topologicalSortUtil(self, v, visited, stack):
 
         visited[v] = True
 
@@ -40,37 +40,37 @@ class Graph():
 
         stack.append(v)
 
-        def topologicalSort(self):
-	    visited = [False] * self.V
-	    stack = []
+    def topologicalSort(self):
+        visited = [False] * self.V
+        stack = []
 
-	    for i in range(self.V):
-	        if not visited[i]:
-		    self.topologicalSortUtil(i, visited, stack)
-		
+        for i in range(self.V):
+            if not visited[i]:
+                self.topologicalSortUtil(i, visited, stack)
+
 def edgeAdder(graph,u,v):
-	graph.graph[u].append(v)
+    graph.graph[u].append(v)
 
 def cycle(graph, v, visited, recStack):
-	visited[v] = True
-	recStack[v] = True
-	for neighbour in graph.graph[v]:
-		if visited[neighbour] == False:
-			if cycle(graph,neighbour, visited, recStack) == True:
-				return True
-		elif recStack[neighbour] == True:
-			return True
-	recStack[v] = False
-	return False
+    visited[v] = True
+    recStack[v] = True
+    for neighbour in graph.graph[v]:
+        if visited[neighbour] == False:
+            if cycle(graph,neighbour, visited, recStack) == True:
+                return True
+        elif recStack[neighbour] == True:
+            return True
+    recStack[v] = False
+    return False
 
 def isCyclic(graph):
-	visited = [False] * (graph.V + 1)
-	recStack = [False] * (graph.V + 1)
-	for node in range(graph.V):
-		if visited[node] == False:
-			if cycle(graph,node,visited,recStack) == True:
-				return True
-	return False
+    visited = [False] * (graph.V + 1)
+    recStack = [False] * (graph.V + 1)
+    for node in range(graph.V):
+        if visited[node] == False:
+            if cycle(graph,node,visited,recStack) == True:
+                return True
+    return False
 
 def find_min(tab,e):
     mini=99999999
@@ -109,24 +109,24 @@ def DFS_visit(graph,u,color,L,found_cycle):
 
 tab_DEL=[]
 def DEL_msasiedztwa(graph):
-	in_d = [0] * (graph.V)
-	for i in graph.graph:
-		for j in graph.graph[i]:
-			in_d[j] += 1
-	q = []
-	for i in range(graph.V):
-		if in_d[i] == 0:
-			q.append(i)
-	cnt = 0
-	top = []
-	while q:
-		u = q.pop(0)
-		top.append(u)
-		for i in graph.graph[u]:
-			in_d[i] -= 1
-			if in_d[i] == 0:
-				q.append(i)
-	tab_DEL.append(top)
+    in_d = [0] * (graph.V)
+    for i in graph.graph:
+        for j in graph.graph[i]:
+            in_d[j] += 1
+    q = []
+    for i in range(graph.V):
+        if in_d[i] == 0:
+            q.append(i)
+    cnt = 0
+    top = []
+    while q:
+        u = q.pop(0)
+        top.append(u)
+        for i in graph.graph[u]:
+            in_d[i] -= 1
+            if in_d[i] == 0:
+                q.append(i)
+    tab_DEL.append(top)
 
 def create_tabs():
     successor = []
@@ -408,8 +408,8 @@ while True:
                             print("Graf zawiera cykl.Sortowanie niemożliwe.")
                         else:
                             x=DFS_msasiedztwa(g)
-			    for i in x:
-				tab_DFS.append(i)
+                            for i in x:
+                                tab_DFS.append(i)
                             for i in range(len(tab_DFS)):
                                 tab_DFS[i] += q
                             print(tab_DFS)
@@ -501,22 +501,22 @@ while True:
                 for i in range(e):
                     edgeAdder(g, vertexes[i][0], vertexes[i][1])
 
-		print("{} z 10 / {} z 4".format(etap,czesc))
+                print("{} z 10 / {} z 4".format(etap,czesc))
                 avg_DFSs = 0
-		t_DFS = []
+                t_DFS = []
                 for x in range(1, 11):
                     print(x, end=" ")
                     time_DFSs = time.time()
                     # y = DFS_msasiedztwa(g)
-	            g.topologicalSort()
-                    end_DFSs = time.time() - time_DFSs
-                    end_DFSs.append(t_DFS)
-                    avg_DFSs += end_DFSs
+                g.topologicalSort()
+                end_DFSs = time.time() - time_DFSs
+                end_DFSs.append(t_DFS)
+                avg_DFSs += end_DFSs
 #                     for i in y:
 #                         tab_DFS.append(i)
 #                     for i in range(len(tab_DFS)):
 #                         tab_DFS[i] += q
-                    tab_DFS = []
+                tab_DFS = []
                 avg_DFSs=avg_DFSs/10
                 os_DFS = 0
                 for i in t_DFS:
@@ -528,7 +528,7 @@ while True:
                 czesc += 1
                 print("{} z 10 / {} z 4".format(etap,czesc))
                 avg_DELs = 0
-		t_DEL =[]
+                t_DEL =[]
                 for x in range(1, 11):
                     print(x, end=" ")
                     time_DELs = time.time()
@@ -602,5 +602,5 @@ while True:
                     f.write(form)
                 print("\n")
                 etap += 1
-	if chosen == 3:
+    if chosen == 3:
             break
