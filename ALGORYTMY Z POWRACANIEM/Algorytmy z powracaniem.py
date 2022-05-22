@@ -22,10 +22,13 @@ class AdjGraph():
         for x in range(size):
             self.adjMatrix.append([0 for i in range(size)])
         self.V = size
+        self.edges = 0
+        self.path = []
 
     def add_edges(self, v1, v2):
         self.adjMatrix[v1][v2] = 1
         self.adjMatrix[v2][v1] = 1
+        self.edges += 1
 
     def print(self):
         for x in self.adjMatrix:
@@ -33,6 +36,12 @@ class AdjGraph():
                 print(val, end=" ")
             print()
 
+    def printpath(self, path):
+        for vrt in path:
+            print(vrt, end=" ")
+        print(path[0],"\n")
+
+    # Hamilton
     def check(self, path, vertex, pos):
         if self.adjMatrix[path[pos-1]][vertex] == 0:
             return False
@@ -61,30 +70,29 @@ class AdjGraph():
         path = [-1] * self.V
         path[0] = 0
         if not self.hamiltonrec(path,1):
-            print("Graf wejściowy nie zawiera cyklu.")
+            print("Graf wejściowy nie zawiera cyklu.\n")
             return False
 
         self.printpath(path)
         return True
 
-    def printpath(self, path):
-        for vrt in path:
-            print(vrt, end=" ")
-        print(path[0],"\n")
-
+    # Euler
     def isEuler(self):
-        for x in g.adjMatrix:
-            degrees = 0
-            for y in x:
-                degrees += y
-            if degrees % 2 == 1:
+        for x in range(self.V):
+            s = 0
+            for y in range(self.V):
+                s += self.adjMatrix[x][y]
+            if s % 2 == 1:
                 return False
         return True
 
-    def Euler(self):
-        if not self.isEuler():
-            print("Graf wejściowy nie zawiera cyklu.")
-
+    def eulerian(self, v):
+        for i in range(self.V):
+            while self.adjMatrix[v][i]:
+                self.adjMatrix[v][i] = 0
+                self.adjMatrix[i][v] = 0
+                self.eulerian(i)
+        self.path.append(v)
 
 density = [10, 20, 30, 40, 50, 60, 70, 80, 90]
 vertexes = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
@@ -132,10 +140,14 @@ while True:
         print("\nCykl Hamiltona w grafie nieskierowanym: ")
         g.hamiltonian()
 
-        print("\nCykl Eulera w grafie nieskierowanym:")
-        g.Euler()
-        print("\n")
-
+        print("Cykl Eulera w grafie nieskierowanym:")
+        if g.isEuler():
+            g.eulerian(0)
+            for x in g.path:
+                print(x, end=" ")
+            print("\n")
+        else:
+            print("Graf wejściowy nie zawiera cyklu.\n")
     if choice == "2":
         try:
             with open("cases.txt", 'r') as f:
