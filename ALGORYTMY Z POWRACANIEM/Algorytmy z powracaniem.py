@@ -86,12 +86,12 @@ class AdjGraph():
                 return False
         return True
 
-    def eulerian(self, v):
+    def dfs_euler(self, v):
         for i in range(self.V):
             while self.adjMatrix[v][i]:
                 self.adjMatrix[v][i] = 0
                 self.adjMatrix[i][v] = 0
-                self.eulerian(i)
+                self.dfs_euler(i)
         self.path.append(v)
 
 density = [10, 20, 30, 40, 50, 60, 70, 80, 90]
@@ -142,23 +142,24 @@ while True:
 
         print("Cykl Eulera w grafie nieskierowanym:")
         if g.isEuler():
-            g.eulerian(0)
+            g.dfs_euler(0)
             for x in g.path:
                 print(x, end=" ")
             print("\n")
         else:
             print("Graf wejściowy nie zawiera cyklu.\n")
     if choice == "2":
+        vertexes_file = []
         try:
             with open("cases.txt", 'r') as f:
                 nol = 1
                 for line in f:
                     if nol == 1:
-                        v, e = map(int, line.split(" "))
+                        vf, ef = map(int, line.split(" "))
                     else:
                         x = list(map(int, line.split()))
-                        if x not in vertexes:
-                            vertexes.append(x)
+                        if x not in vertexes_file:
+                            vertexes_file.append(x)
                         else:
                             raise DoubledValue
                     nol += 1
@@ -168,6 +169,24 @@ while True:
             print("Plik zawiera niepoprawne dane! Należy go sprawdzić!")
         except DoubledValue:
             print("Jedna z wartości wystepuje wielokrotnie i nie zostanie dodana! Sprawdź plik.")
+
+        g1 = AdjGraph(vf)  # Macierz sąsiedztwa od 0
+        for edges in vertexes_file:
+            v1, v2 = edges
+            g1.add_edges(v1, v2)
+
+        print("\nCykl Hamiltona w grafie nieskierowanym: ")
+        g1.hamiltonian()
+
+        print("Cykl Eulera w grafie nieskierowanym:")
+        if g1.isEuler():
+            g1.dfs_euler(0)
+            for x in g1.path:
+                print(x, end=" ")
+            print("\n")
+        else:
+            print("Graf wejściowy nie zawiera cyklu.\n")
+
     if choice == "3":
         break
     if choice not in ["1", "2", "3"]:
