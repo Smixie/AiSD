@@ -338,7 +338,9 @@ while True:
         #     print("\n")
         # else:
         #     print("Graf wejściowy nie zawiera cyklu.\n")
-
+        del g
+        del gL
+        P = []
     if choice == "2":
         vertexes_file = []
         try:
