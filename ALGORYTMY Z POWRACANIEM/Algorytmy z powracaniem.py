@@ -1,3 +1,4 @@
+from collections import defaultdict
 import networkx
 
 
@@ -94,6 +95,90 @@ class AdjGraph():
                 self.dfs_euler(i)
         self.path.append(v)
 
+class Graph():
+    def __init__(self, vertices):
+        self.graph = defaultdict(list)
+        self.V = vertices
+
+
+def edgeAdder(graph, u, v):
+    graph.graph[u].append(v)
+
+def find_min(tab, e):
+    mini = 99999999
+    for i in range(e):
+        if tab[i][0] < mini: mini = tab[i][0]
+        if tab[i][1] < mini: mini = tab[i][1]
+    return mini
+
+
+global visited
+visited = 0
+P = []
+
+
+def hamiltonianL(graph, ver, O, n, P):
+    O[ver] = 1
+    P.append(ver)
+    global visited
+    visited += 1
+    # print(P,visited)
+    # print(graph.V)
+    # print(graph.graph[ver])
+    for i in graph.graph[ver]:
+        # print(i)
+        # P.append(ver)
+        if i == start and visited == n:
+            P.append(start)
+            return True
+        if not O[i]:
+            if hamiltonianL(graph, i, O, n, P):
+                # P.append(ver)
+                return True
+    O[ver] = 0
+    visited -= 1
+    del P[-1]
+    return False
+
+
+def Hcycle(graph, O, n):
+    # for i in range(n):
+    # O[i] = False
+    # P.append(0)
+    global start
+    start = 0
+    global visited
+    visited = 0
+    # k=1
+    global P
+    hamiltonianL(graph, start, O, n, P)
+
+
+def eulerianL(graph):
+    a=graph
+    e_count = dict()
+    for i in range(len(a.graph)):
+        e_count[i] = len(a.graph[i])
+    path = [0]
+    c = []
+    #path.append(0)
+    ver = 0
+    if len(a.graph) == 0: return False
+    while len(path):
+        if e_count[ver]:
+            path.append(ver)
+            next_ver = a.graph[ver][-1]
+            e_count[ver] -= 1
+            a.graph[ver].pop()
+            ver = next_ver
+        else:
+            c.append(ver)
+            ver = path[-1]
+            path.pop()
+    c.reverse()
+    if c[0]==c[-1]: return c
+    else: return False
+        
 density = [10, 20, 30, 40, 50, 60, 70, 80, 90]
 vertexes = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
@@ -136,7 +221,35 @@ while True:
         for edges in vertexes:
             v1, v2 = edges
             g.add_edges(v1, v2)
+        
+        gL=Graph(v) #Lista następników od 0
+        q = find_min(vertexes, e)
+        # print(vertexes)
+        if q != 0:
+            for i in range(e):
+                vertexes[i][0] = vertexes[i][0] - q
+                vertexes[i][1] = vertexes[i][1] - q
+        # print(vertexes)
+        for i in range(e):
+            edgeAdder(gL, vertexes[i][0], vertexes[i][1])
+        O = []
+        # P = []
+        for i in range(v):
+            O.append(0)
 
+        print("\nCykl Hamiltona w grafie skierowanym: ")
+        Hcycle(gL, O, v)
+        if len(P)<v+1:
+            print("Graf wejściowy nie zawiera cyklu.")
+        else:
+            print([i+q for i in P])
+        print("\nCykl Eulera w grafie skierowanym: ")
+        result = eulerianL(gL)
+        #result.reverse()
+        if not result: print("Graf wejściowy nie zawiera cyklu.")
+        else: print([i+q for i in result])
+        print("\n")
+        
         print("\nCykl Hamiltona w grafie nieskierowanym: ")
         g.hamiltonian()
 
