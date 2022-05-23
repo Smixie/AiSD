@@ -1,5 +1,7 @@
 from collections import defaultdict
-import networkx
+from random import random
+from itertools import combinations
+# from networkx.generators.random_graphs import erdos_renyi_graph
 
 
 class Error(Exception):
@@ -25,11 +27,14 @@ class AdjGraph():
         self.V = size
         self.edges = 0
         self.path = []
+        self.vd = [0] * size
 
     def add_edges(self, v1, v2):
         self.adjMatrix[v1][v2] = 1
         self.adjMatrix[v2][v1] = 1
         self.edges += 1
+        self.vd[v1] += 1
+        self.vd[v2] += 1
 
     def print(self):
         for x in self.adjMatrix:
@@ -95,6 +100,45 @@ class AdjGraph():
                 self.dfs_euler(i)
         self.path.append(v)
 
+    def dfsb(self, v ,vf ,D ,cv):
+        D[v] = cv
+        low = cv
+        cv += 1
+        for u in range(self.V):
+            if u != vf and self.adjMatrix[v][u]:
+                if D[u] == 0:
+                    temp = self.dfsb(u, v, D, cv)
+                    if temp < low:
+                        low = temp
+                elif D[u] < low:
+                    low = D[u]
+        if vf > -1 and low == D[v]:
+            self.adjMatrix[vf][v] = self.adjMatrix[v][vf] = 2
+        return low
+
+    def findEuler(self, v):
+        S = []
+        while True:
+            S.append(v)
+            u = 0
+            while u < self.V and not self.adjMatrix[v][u]:
+                u += 1
+            if u == self.V:
+                break
+            D = [0] * self.V
+            cv = 1
+            self.dfsb(v,-1, D, cv)
+
+            w = u + 1
+            while self.adjMatrix[v][u] == 2 and w < self.V:
+                if self.adjMatrix[v][w]:
+                    u = w
+                w += 1
+            self.adjMatrix[v][u] = self.adjMatrix[u][v] = 0
+            v = u
+        return S
+
+
 class Graph():
     def __init__(self, vertices):
         self.graph = defaultdict(list)
@@ -157,7 +201,7 @@ def Hcycle(graph, O, n):
 def eulerianL(graph):
     a=graph
     e_count = dict()
-    for i in range(len(a.graph)):
+    for i in range(a.V):  # wcześniej było range(len(a.graph))
         e_count[i] = len(a.graph[i])
     path = [0]
     c = []
@@ -179,7 +223,16 @@ def eulerianL(graph):
     if c[0]==c[-1]: return c
     else: return False
         
-density = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+def ER(n, p):
+    V = set([v for v in range(n)])
+    E = []
+    for combination in combinations(V, 2):
+        a = random()
+        if a < p:
+            E.append(combination)
+    return E
+
+density = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 vertexes = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
 
@@ -217,21 +270,18 @@ while True:
             except DoubledValue:
                 print("Taka wartość już istnieje nie można jej dodać ponownie!")
 
-        g = AdjGraph(v)  # Macierz sąsiedztwa od 0
-        for edges in vertexes:
-            v1, v2 = edges
-            g.add_edges(v1, v2)
-        
         gL=Graph(v) #Lista następników od 0
         q = find_min(vertexes, e)
         # print(vertexes)
+
         if q != 0:
             for i in range(e):
                 vertexes[i][0] = vertexes[i][0] - q
                 vertexes[i][1] = vertexes[i][1] - q
-        # print(vertexes)
+
         for i in range(e):
             edgeAdder(gL, vertexes[i][0], vertexes[i][1])
+
         O = []
         # P = []
         for i in range(v):
@@ -239,28 +289,56 @@ while True:
 
         print("\nCykl Hamiltona w grafie skierowanym: ")
         Hcycle(gL, O, v)
-        if len(P)<v+1:
+        if len(P) < v+1:
             print("Graf wejściowy nie zawiera cyklu.")
         else:
             print([i+q for i in P])
+
         print("\nCykl Eulera w grafie skierowanym: ")
         result = eulerianL(gL)
         #result.reverse()
         if not result: print("Graf wejściowy nie zawiera cyklu.")
         else: print([i+q for i in result])
         print("\n")
-        
+
+        g = AdjGraph(v)  # Macierz sąsiedztwa od 0
+        for edges in vertexes:
+            v1, v2 = edges
+            g.add_edges(v1, v2)
+
         print("\nCykl Hamiltona w grafie nieskierowanym: ")
         g.hamiltonian()
 
         print("Cykl Eulera w grafie nieskierowanym:")
-        if g.isEuler():
-            g.dfs_euler(0)
-            for x in g.path:
+        flag = True
+        for v1 in range(g.V):
+            if g.vd[v1]:
+                break
+
+        for i in range(v1,g.V):
+            if g.vd[i] % 2 == 1:
+                flag = False
+
+        for i in range(v1,g.V):
+            if g.vd[i] % 2:
+                v1 = i
+                break
+
+        if flag:
+            output = g.findEuler(v1)
+            for x in output:
                 print(x, end=" ")
             print("\n")
         else:
             print("Graf wejściowy nie zawiera cyklu.\n")
+        # if g.isEuler():
+        #     g.dfs_euler(0)
+        #     for x in g.path:
+        #         print(x, end=" ")
+        #     print("\n")
+        # else:
+        #     print("Graf wejściowy nie zawiera cyklu.\n")
+
     if choice == "2":
         vertexes_file = []
         try:
