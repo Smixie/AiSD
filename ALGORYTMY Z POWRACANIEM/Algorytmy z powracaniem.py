@@ -42,9 +42,9 @@ class AdjGraph():
                 print(val, end=" ")
             print()
 
-    def printpath(self, path):
+    def printpath(self, path, q):
         for vrt in path:
-            print(vrt, end=" ")
+            print(vrt+q, end=" ")
         print(path[0],"\n")
 
     # Hamilton
@@ -72,14 +72,14 @@ class AdjGraph():
             path[pos] = -1
         return False
 
-    def hamiltonian(self):
+    def hamiltonian(self, q):
         path = [-1] * self.V
         path[0] = 0
         if not self.hamiltonrec(path,1):
             print("Graf wejściowy nie zawiera cyklu.\n")
             return False
 
-        self.printpath(path)
+        self.printpath(path, q)
         return True
 
     # Euler
@@ -307,7 +307,7 @@ while True:
             g.add_edges(v1, v2)
 
         print("\nCykl Hamiltona w grafie nieskierowanym: ")
-        g.hamiltonian()
+        g.hamiltonian(q)
 
         print("Cykl Eulera w grafie nieskierowanym:")
         flag = True
@@ -327,7 +327,7 @@ while True:
         if flag:
             output = g.findEuler(v1)
             for x in output:
-                print(x, end=" ")
+                print(x+q, end=" ")
             print("\n")
         else:
             print("Graf wejściowy nie zawiera cyklu.\n")
@@ -401,17 +401,34 @@ while True:
             g1.add_edges(v1, v2)
 
         print("\nCykl Hamiltona w grafie nieskierowanym: ")
-        g1.hamiltonian()
+        g1.hamiltonian(q)
 
         print("Cykl Eulera w grafie nieskierowanym:")
-        if g1.isEuler():
-            g1.dfs_euler(0)
-            for x in g1.path:
-                print(x, end=" ")
+        flag = True
+        for v1 in range(g1.V):
+            if g1.vd[v1]:
+                break
+
+        for i in range(v1, g1.V):
+            if g1.vd[i] % 2 == 1:
+                flag = False
+
+        for i in range(v1, g1.V):
+            if g1.vd[i] % 2:
+                v1 = i
+                break
+
+        if flag:
+            output = g1.findEuler(v1)
+            for x in output:
+                print(x+q, end=" ")
             print("\n")
         else:
             print("Graf wejściowy nie zawiera cyklu.\n")
 
+        del g1
+        del gL1
+        P = []
     if choice == "3":
         break
     if choice not in ["1", "2", "3"]:
