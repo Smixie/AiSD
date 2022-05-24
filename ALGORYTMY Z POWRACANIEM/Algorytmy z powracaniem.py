@@ -362,7 +362,39 @@ while True:
             print("Plik zawiera niepoprawne dane! Należy go sprawdzić!")
         except DoubledValue:
             print("Jedna z wartości wystepuje wielokrotnie i nie zostanie dodana! Sprawdź plik.")
+        
+        gL1 = Graph(vf)  # Lista następników od 0
+        q = find_min(vertexes_file, ef)
 
+        if q != 0:
+            for i in range(e):
+                vertexes_file[i][0] = vertexes_file[i][0] - q
+                vertexes_file[i][1] = vertexes_file[i][1] - q
+
+        for i in range(ef):
+            edgeAdder(gL1, vertexes_file[i][0], vertexes_file[i][1])
+
+        O = []
+        # P = []
+        for i in range(vf):
+            O.append(0)
+
+        print("\nCykl Hamiltona w grafie skierowanym: ")
+        Hcycle(gL1, O, vf)
+        if len(P) < vf + 1:
+            print("Graf wejściowy nie zawiera cyklu.")
+        else:
+            print([i + q for i in P])
+
+        print("\nCykl Eulera w grafie skierowanym: ")
+        result = eulerianL(gL1)
+        # result.reverse()
+        if not result:
+            print("Graf wejściowy nie zawiera cyklu.")
+        else:
+            print([i + q for i in result])
+        print("\n")
+        
         g1 = AdjGraph(vf)  # Macierz sąsiedztwa od 0
         for edges in vertexes_file:
             v1, v2 = edges
