@@ -1,6 +1,7 @@
 from collections import defaultdict
 from random import random
 from itertools import combinations
+import networkx
 from networkx.generators.random_graphs import erdos_renyi_graph
 import time
 import math
@@ -242,7 +243,7 @@ def ER(n, p):
 
 density = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 cases2 = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-cases = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
+cases = [10,13,16,19,22,25,28,31,34,37]
 
 while True:
     print("1 - Dane wczytane z klawiatury\n2 - Dane wczytane z pliku\n3 - Zakończ")
@@ -443,134 +444,146 @@ while True:
         del gL1
         P = []
     if choice == "3":
-        etap = 1
-        for v in cases:
-            czesc = 1
-            # Tworznenie wierzchołków
-            vertexes = []
-            p = 0.9
-            g = erdos_renyi_graph(v, p)
-            vertexes = []
-            for x in g.edges:
-                vertexes.append(list(x))
-
-            e = len(vertexes)
-
-            # Macierz sąsiedzwtwa
-            g = Graph(v)
-            q = find_min(vertexes, e)
-
-            if q != 0:
-                for i in range(e):
-                    vertexes[i][0] = vertexes[i][0] - q
-                    vertexes[i][1] = vertexes[i][1] - q
-
-            for i in range(e):
-                edgeAdder(g, vertexes[i][0], vertexes[i][1])
-
-            #print("{} z 10 / {} z 4".format(etap, czesc))
-            tab_hl=[]
-            avg_hl=0
-            for x in range(1, 11):
-                O = []
-                for i in range(v):
-                    O.append(0)
-                print(x, end=" ")
-                time_hl = time.time()
-                Hcycle(g,O,v)
-                end_hl = time.time() - time_hl
-                tab_hl.append(end_hl)
-                avg_hl += end_hl
-            #tab_hl = []
-            avg_hl = avg_hl / 10
-            os_hl = 0
-            for i in tab_hl:
-                os_hl += (i - avg_hl) * (i - avg_hl)
-            os_hl = math.sqrt(os_hl / 10)
-            with open('HamiltonL.txt', 'a') as f:
-                form = "{}\t{}\t{}\n".format(v, avg_hl, os_hl)
-                f.write(form)
-            print("\n")
-            czesc += 1
-            #print("{} z 10 / {} z 4".format(etap, czesc))
-            avg_el = 0
-            tab_el = []
-            for x in range(1, 11):
-                print(x, end=" ")
-                time_el = time.time()
-                eulerianL(g)
-                end_el = time.time() - time_el
-                tab_el.append(end_el)
-                avg_el += end_el
-                #tab_el = []
-            avg_el = avg_el / 10
-            os_el = 0
-            for i in tab_el:
-                os_el += (i - avg_el) * (i - avg_el)
-            os_DEL = math.sqrt(os_el / 10)
+        for p in density:
             with open('EulerL.txt', 'a') as f:
-                form = "{}\t{}\t{}\n".format(v, avg_el, os_el)
+                form = "{}\n".format(p)
                 f.write(form)
-            print("\n")
-
-            czesc += 1
-            #print("{} z 10 / {} z 4".format(etap, czesc))
-            g1 = AdjGraph(v)
-            for edges in vertexes:
-                v1, v2 = edges
-                g1.add_edges(v1, v2)
-            avg_hm = 0
-            t_hm = []
-            for x in range(1, 11):
-                print(x, end=" ")
-                time_hm = time.time()
-                g1.hamiltonian(0)
-                end_hm = time.time() - time_hm
-                t_hm.append(end_hm)
-                avg_hm += end_hm
-            avg_hm = avg_hm / 10
-            os_hm = 0
-            for i in t_hm:
-                os_hm += (i - avg_hm) * (i - avg_hm)
-            os_hm = math.sqrt(os_hm / 10)
             with open('HamiltonM.txt', 'a') as f:
-                form = "{}\t{}\t{}\n".format(v, avg_hm, os_hm)
+                form = "{}\n".format(p)
                 f.write(form)
-            print("\n")
-
-            czesc += 1
-            #print("{} z 10 / {} z 4".format(etap, czesc))
-            avg_em = 0
-            t_em = []
-            for x in range(1, 11):
-                print(x, end=" ")
-                flag = True
-                for v1 in range(g1.V):
-                    if g1.vd[v1]:
-                        break
-
-                for i in range(v1, g1.V):
-                    if g1.vd[i] % 2:
-                        v1 = i
-                        break
-
-                time_em = time.time()
-                output = g1.findEuler(v1)
-                end_em = time.time() - time_em
-                t_em.append(end_em)
-                avg_em += end_em
-            avg_em = avg_em / 10
-            os_em = 0
-            for i in t_em:
-                os_em += (i - avg_em) * (i - avg_em)
-            os_em = math.sqrt(os_em / 10)
             with open('EulerM.txt', 'a') as f:
-                form = "{}\t{}\t{}\n".format(v, avg_em, os_em)
+                form = "{}\n".format(p)
                 f.write(form)
-            print("\n")
+            with open('HamiltonL.txt', 'a') as f:
+                form = "{}\n".format(p)
+                f.write(form)
+            etap = 1
+            for v in cases:
+                czesc = 1
+                # Tworznenie wierzchołków
+                vertexes = []
+                vertexes2 = []
+                g = erdos_renyi_graph(v, p,directed=True) # Dla grafu skierowanego
+                for x in g.edges:
+                    vertexes.append(list(x))
+
+                g2 = erdos_renyi_graph(v, p) # Dla grafu nieskierowanego
+                for x in g2.edges:
+                    vertexes2.append(list(x))
+
+
+                e = len(vertexes)
+                gL = Graph(v)
+                for i in range(e):
+                    edgeAdder(gL, vertexes[i][0], vertexes[i][1])
+
+                print("{} z 10 / {} z 4".format(etap, czesc))
+                tab_hl=[]
+                avg_hl=0
+                for x in range(1, 11):
+                    O = []
+                    for i in range(v):
+                        O.append(0)
+                    print(x, end=" ")
+                    time_hl = time.time()
+                    Hcycle(gL,O,v)
+                    end_hl = time.time() - time_hl
+                    tab_hl.append(end_hl)
+                    avg_hl += end_hl
+                #tab_hl = []
+                avg_hl = avg_hl / 10
+                os_hl = 0
+                for i in tab_hl:
+                    os_hl += (i - avg_hl) * (i - avg_hl)
+                os_hl = math.sqrt(os_hl / 10)
+                with open('HamiltonL.txt', 'a') as f:
+                    form = "{}\t{}\t{}\n".format(v, avg_hl, os_hl)
+                    f.write(form)
+                print("\n")
+
+                czesc += 1
+                print("{} z 10 / {} z 4".format(etap, czesc))
+                avg_el = 0
+                tab_el = []
+                for x in range(1, 11):
+                    print(x, end=" ")
+                    time_el = time.time()
+                    eulerianL(gL)
+                    end_el = time.time() - time_el
+                    tab_el.append(end_el)
+                    avg_el += end_el
+                    #tab_el = []
+                avg_el = avg_el / 10
+                os_el = 0
+                for i in tab_el:
+                    os_el += (i - avg_el) * (i - avg_el)
+                os_DEL = math.sqrt(os_el / 10)
+                with open('EulerL.txt', 'a') as f:
+                    form = "{}\t{}\t{}\n".format(v, avg_el, os_el)
+                    f.write(form)
+                print("\n")
+
+                czesc += 1
+                print("{} z 10 / {} z 4".format(etap, czesc))
+                g1 = AdjGraph(v)
+                for edges in vertexes2:
+                    v1, v2 = edges
+                    g1.add_edges(v1, v2)
+                avg_hm = 0
+                t_hm = []
+
+                for x in range(1, 11):
+                    print(x, end=" ")
+                    time_hm = time.time()
+                    g1.hamiltonian(0)
+                    end_hm = time.time() - time_hm
+                    t_hm.append(end_hm)
+                    avg_hm += end_hm
+                avg_hm = avg_hm / 10
+                os_hm = 0
+                for i in t_hm:
+                    os_hm += (i - avg_hm) * (i - avg_hm)
+                os_hm = math.sqrt(os_hm / 10)
+                with open('HamiltonM.txt', 'a') as f:
+                    form = "{}\t{}\t{}\n".format(v, avg_hm, os_hm)
+                    f.write(form)
+                print("\n")
+
+                czesc += 1
+                print("{} z 10 / {} z 4".format(etap, czesc))
+                avg_em = 0
+                t_em = []
+
+
+                for x in range(1, 11):
+                    print(x, end=" ")
+                    flag = True
+                    for v1 in range(g1.V):
+                        if g1.vd[v1]:
+                            break
+
+                    for i in range(v1, g1.V):
+                        if g1.vd[i] % 2:
+                            v1 = i
+                            break
+
+                    time_em = time.time()
+                    output = g1.findEuler(v1)
+                    end_em = time.time() - time_em
+                    t_em.append(end_em)
+                    avg_em += end_em
+                avg_em = avg_em / 10
+                os_em = 0
+                for i in t_em:
+                    os_em += (i - avg_em) * (i - avg_em)
+                os_em = math.sqrt(os_em / 10)
+                with open('EulerM.txt', 'a') as f:
+                    form = "{}\t{}\t{}\n".format(v, avg_em, os_em)
+                    f.write(form)
+                print("\n")
+                del g
+                del g1
             etap += 1
-            del g
-            del g1
         break
     if choice not in ["1", "2", "3"]:
         print("Podaj poprawną wartość!")
