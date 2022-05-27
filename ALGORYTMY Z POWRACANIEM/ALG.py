@@ -6,8 +6,6 @@ import time
 import math
 
 
-# from networkx.generators.random_graphs import erdos_renyi_graph
-
 
 class Error(Exception):
     """Base class for other exceptions"""
@@ -81,10 +79,10 @@ class AdjGraph():
         path = [-1] * self.V
         path[0] = 0
         if not self.hamiltonrec(path, 1):
-            print("Graf wejściowy nie zawiera cyklu.\n")
+           # print("Graf wejściowy nie zawiera cyklu.\n")
             return False
 
-        self.printpath(path, q)
+        # self.printpath(path, q)
         return True
 
     # Euler
@@ -243,7 +241,8 @@ def ER(n, p):
 
 
 density = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-cases = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+cases2 = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+cases = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
 
 while True:
     print("1 - Dane wczytane z klawiatury\n2 - Dane wczytane z pliku\n3 - Zakończ")
@@ -449,7 +448,7 @@ while True:
             czesc = 1
             # Tworznenie wierzchołków
             vertexes = []
-            p = 0.5
+            p = 0.9
             g = erdos_renyi_graph(v, p)
             vertexes = []
             for x in g.edges:
@@ -491,6 +490,7 @@ while True:
             with open('HamiltonL.txt', 'a') as f:
                 form = "{}\t{}\t{}\n".format(v, avg_hl, os_hl)
                 f.write(form)
+            print("\n")
             czesc += 1
             #print("{} z 10 / {} z 4".format(etap, czesc))
             avg_el = 0
@@ -556,10 +556,6 @@ while True:
 
                 time_em = time.time()
                 output = g1.findEuler(v1)
-                if len(output) > 10:
-                    for x in output:
-                        print(x, end=" ")
-                    print("\n")
                 end_em = time.time() - time_em
                 t_em.append(end_em)
                 avg_em += end_em
@@ -573,5 +569,8 @@ while True:
                 f.write(form)
             print("\n")
             etap += 1
+            del g
+            del g1
+        break
     if choice not in ["1", "2", "3"]:
         print("Podaj poprawną wartość!")
