@@ -242,8 +242,7 @@ def ER(n, p):
 
 
 density = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-cases2 = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-cases = [10,13,16,19,22,25,28,31,34,37]
+cases = [10, 12, 13, 15, 16, 18, 19, 21, 22, 23]
 
 while True:
     print("1 - Dane wczytane z klawiatury\n2 - Dane wczytane z pliku\n3 - Zakończ")
@@ -444,6 +443,7 @@ while True:
         del gL1
         P = []
     if choice == "3":
+        etap = 1
         for p in density:
             with open('EulerL.txt', 'a') as f:
                 form = "{}\n".format(p)
@@ -457,39 +457,35 @@ while True:
             with open('HamiltonL.txt', 'a') as f:
                 form = "{}\n".format(p)
                 f.write(form)
-            etap = 1
             for v in cases:
                 czesc = 1
                 # Tworznenie wierzchołków
-                vertexes = []
-                vertexes2 = []
-                g = erdos_renyi_graph(v, p,directed=True) # Dla grafu skierowanego
-                for x in g.edges:
-                    vertexes.append(list(x))
-
-                g2 = erdos_renyi_graph(v, p) # Dla grafu nieskierowanego
-                for x in g2.edges:
-                    vertexes2.append(list(x))
-
-
-                e = len(vertexes)
-                gL = Graph(v)
-                for i in range(e):
-                    edgeAdder(gL, vertexes[i][0], vertexes[i][1])
 
                 print("{} z 10 / {} z 4".format(etap, czesc))
                 tab_hl=[]
                 avg_hl=0
                 for x in range(1, 11):
+                    vertexes = []
+                    g = erdos_renyi_graph(v, p, directed=True)  # Dla grafu skierowanego
+                    for x1 in g.edges:
+                        vertexes.append(list(x1))
+
+                    e = len(vertexes)
+                    gL = Graph(v)
+                    for i in range(e):
+                        edgeAdder(gL, vertexes[i][0], vertexes[i][1])
+
                     O = []
                     for i in range(v):
                         O.append(0)
+
                     print(x, end=" ")
                     time_hl = time.time()
                     Hcycle(gL,O,v)
                     end_hl = time.time() - time_hl
                     tab_hl.append(end_hl)
                     avg_hl += end_hl
+                    del gL
                 #tab_hl = []
                 avg_hl = avg_hl / 10
                 os_hl = 0
@@ -506,6 +502,16 @@ while True:
                 avg_el = 0
                 tab_el = []
                 for x in range(1, 11):
+                    vertexes = []
+                    g = erdos_renyi_graph(v, p, directed=True)  # Dla grafu skierowanego
+                    for x1 in g.edges:
+                        vertexes.append(list(x1))
+
+                    e = len(vertexes)
+                    gL = Graph(v)
+                    for i in range(e):
+                        edgeAdder(gL, vertexes[i][0], vertexes[i][1])
+
                     print(x, end=" ")
                     time_el = time.time()
                     eulerianL(gL)
@@ -513,6 +519,7 @@ while True:
                     tab_el.append(end_el)
                     avg_el += end_el
                     #tab_el = []
+                    del gL
                 avg_el = avg_el / 10
                 os_el = 0
                 for i in tab_el:
@@ -523,22 +530,33 @@ while True:
                     f.write(form)
                 print("\n")
 
+
+
                 czesc += 1
                 print("{} z 10 / {} z 4".format(etap, czesc))
-                g1 = AdjGraph(v)
-                for edges in vertexes2:
-                    v1, v2 = edges
-                    g1.add_edges(v1, v2)
+
                 avg_hm = 0
                 t_hm = []
 
                 for x in range(1, 11):
+                    vertexes2 = []
+
+                    g2 = erdos_renyi_graph(v, p)  # Dla grafu nieskierowanego
+                    for x1 in g2.edges:
+                        vertexes2.append(list(x1))
+
+                    g1 = AdjGraph(v)
+                    for edges in vertexes2:
+                        v1, v2 = edges
+                        g1.add_edges(v1, v2)
+
                     print(x, end=" ")
                     time_hm = time.time()
                     g1.hamiltonian(0)
                     end_hm = time.time() - time_hm
                     t_hm.append(end_hm)
                     avg_hm += end_hm
+                    del g1
                 avg_hm = avg_hm / 10
                 os_hm = 0
                 for i in t_hm:
@@ -556,6 +574,17 @@ while True:
 
 
                 for x in range(1, 11):
+                    vertexes2 = []
+
+                    g2 = erdos_renyi_graph(v, p)  # Dla grafu nieskierowanego
+                    for x1 in g2.edges:
+                        vertexes2.append(list(x1))
+
+                    g1 = AdjGraph(v)
+                    for edges in vertexes2:
+                        v1, v2 = edges
+                        g1.add_edges(v1, v2)
+
                     print(x, end=" ")
                     flag = True
                     for v1 in range(g1.V):
@@ -572,6 +601,8 @@ while True:
                     end_em = time.time() - time_em
                     t_em.append(end_em)
                     avg_em += end_em
+
+                    del g1
                 avg_em = avg_em / 10
                 os_em = 0
                 for i in t_em:
@@ -581,8 +612,7 @@ while True:
                     form = "{}\t{}\t{}\n".format(v, avg_em, os_em)
                     f.write(form)
                 print("\n")
-                del g
-                del g1
+
             etap += 1
         break
     if choice not in ["1", "2", "3"]:
