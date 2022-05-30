@@ -1,8 +1,9 @@
 from collections import defaultdict
-from random import random
+from random import random, randint
 from itertools import combinations
-# from networkx.generators.random_graphs import erdos_renyi_graph
-
+import networkx as nx
+import math
+import time
 
 class Error(Exception):
     """Base class for other exceptions"""
@@ -19,7 +20,7 @@ class DoubledValue(Error):
     pass
 
 
-class AdjGraph():
+class AdjGraph:
     def __init__(self, size):
         self.adjMatrix = []
         for x in range(size):
@@ -100,7 +101,7 @@ class AdjGraph():
                 self.dfs_euler(i)
         self.path.append(v)
 
-    def dfsb(self, v ,vf ,D ,cv):
+    def dfsb(self, v, vf, D, cv):
         D[v] = cv
         low = cv
         cv += 1
@@ -138,6 +139,46 @@ class AdjGraph():
             v = u
         return S
 
+    def traverse(self,u, visited):
+        visited[u] = True
+
+        for v in range(self.V):
+            if self.adjMatrix[u][v]:
+                if not visited[v]:
+                    self.traverse(v,visited)
+
+    def isCon(self):
+        vis = [False] * self.V
+        for u in range(self.V):
+            for i  in range(self.V):
+                vis[i] = False
+
+        self.traverse(u,vis)
+
+        for i in range(self.V):
+            if not vis[i]:
+                return False
+        return True
+
+    def isEulers(self):
+        if not self.isCon():
+            return 0
+        deg = [0] * self.V
+        oddDeg = 0
+
+        for i in range(self.V):
+            for j in range(self.V):
+                if self.adjMatrix[i][j]:
+                    deg[i] += 1
+            if deg[i] % 2 != 0:
+                oddDeg += 1
+
+        if oddDeg > 2:
+            return 0
+        if oddDeg == 0:
+            return 2
+        if oddDeg == 2:
+            return 1
 
 class Graph():
     def __init__(self, vertices):
@@ -222,19 +263,9 @@ def eulerianL(graph):
     c.reverse()
     if c[0]==c[-1]: return c
     else: return False
-        
-def ER(n, p):
-    V = set([v for v in range(n)])
-    E = []
-    for combination in combinations(V, 2):
-        a = random()
-        if a < p:
-            E.append(combination)
-    return E
 
 density = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 vertexes = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-
 
 while True:
     print("1 - Dane wczytane z klawiatury\n2 - Dane wczytane z pliku\n3 - Zakończ")
