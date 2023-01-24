@@ -1,4 +1,4 @@
-#AISD - Algorytmy i Struktury Danych
+AISD - Algorytmy i Struktury Danych
 - SORT ALGORITHMS
 - GRAPHS
 - KNAPSACK
